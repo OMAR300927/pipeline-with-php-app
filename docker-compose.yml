@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: php_app
+      MYSQL_USER: omar
+      MYSQL_PASSWORD: omar1234
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3200:80"
+
+volumes:
+  db_data:
