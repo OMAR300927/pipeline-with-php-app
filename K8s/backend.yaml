@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ba-app
+  template:
+    metadata:
+      labels:
+        app: ba-app
+    spec:
+      containers:
+      - name: backend-container
+        image: omarsa999/backendimage:latest
+        ports:
+        - containerPort: 8000
+        env:
+          - name: DB_HOST
+            value: mysql
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: db_name
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: password
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ba-service
+  labels:
+    app: ba-app
+spec:
+  selector:
+    app: ba-app
+  ports:
+  - port: 8000
+    targetPort: 8000
