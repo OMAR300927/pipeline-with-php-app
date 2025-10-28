@@ -2,16 +2,18 @@ version: "3.8"
 services:
 
   jenkins:
-    image: jenkins/jenkins:lts
+    build: .
     container_name: jenkins
     user: root
     restart: always
     ports:
-      - "8085:8080"   # Web UI
-      - "50000:50000" # Agent communication port (JNLP)
+      - "8085:8080"
+      - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/omar/.kube:/var/jenkins_home/.kube:ro
+      - /home/omar/.minikube:/var/jenkins_home/.minikube:ro
+      - /var/run/docker.sock:/var/run/docker.sock  
     networks:
       - devops_net
 
@@ -40,3 +42,4 @@ volumes:
   jenkins_data:
   sonarqube_data:
   sonarqube_extensions:
+  
