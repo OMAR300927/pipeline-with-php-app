@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
 
   jenkins:
@@ -9,16 +10,16 @@ services:
     ports:
       - "8085:8080"
       - "50000:50000"
+    environment:
+      SONAR_HOST_URL: "http://sonarqube:9000"
+      KUBECONFIG: /var/jenkins_home/.kube/config
     volumes:
       - jenkins_data:/var/jenkins_home
-      - /home/omar/.kube/config:/var/jenkins_home/.kube/config:ro
-      - /home/omar/.minikube/profiles/minikube/client.crt:/var/jenkins_home/.minikube/profiles/minikube/client.crt:ro
-      - /home/omar/.minikube/profiles/minikube/client.key:/var/jenkins_home/.minikube/profiles/minikube/client.key:ro
-      - /home/omar/.minikube/ca.crt:/var/jenkins_home/.minikube/ca.crt:ro
+      - /home/omar/.kube:/var/jenkins_home/.kube:ro
+      - /home/omar/.minikube:/home/omar/.minikube:ro
       - /var/run/docker.sock:/var/run/docker.sock
- 
     networks:
-      - devops_net
+      - minikube
 
   sonarqube:
     image: sonarqube:lts-community
@@ -28,21 +29,22 @@ services:
     restart: always
     ports:
       - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
     volumes:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
     networks:
-      - devops_net
+      - minikube
 
 # =============================
 #   Networks & Volumes
 # =============================
 networks:
-  devops_net:
-    driver: bridge
+  minikube:
+    external: true
 
 volumes:
   jenkins_data:
   sonarqube_data:
   sonarqube_extensions:
-  
