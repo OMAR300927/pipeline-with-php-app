@@ -61,10 +61,27 @@ spec:
             requests:
               memory: "512Mi"
               cpu: "250m"
+      # use exporter to expose the mysql metrics
+        - name: mysql-exporter
+          image: prom/mysqld-exporter
+          ports:
+            - containerPort: 9104
+              name: metrics
+          env:
+            - name: DATA_SOURCE_NAME
+              value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
             claimName: mysql-pvc
+      
 ---
 apiVersion: v1
 kind: Service
@@ -78,3 +95,8 @@ spec:
   ports:
     - port: 3306
       targetPort: 3306
+      protocol: TCP
+      name: http
+    - port: 9104
+      targetPort: 9104
+      name: metrics
