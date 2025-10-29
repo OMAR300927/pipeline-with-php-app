@@ -11,9 +11,12 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
-      - /home/omar/.kube:/var/jenkins_home/.kube:ro
-      - /home/omar/.minikube:/var/jenkins_home/.minikube:ro
-      - /var/run/docker.sock:/var/run/docker.sock  
+      - /home/omar/.kube/config:/var/jenkins_home/.kube/config:ro
+      - /home/omar/.minikube/profiles/minikube/client.crt:/var/jenkins_home/.minikube/profiles/minikube/client.crt:ro
+      - /home/omar/.minikube/profiles/minikube/client.key:/var/jenkins_home/.minikube/profiles/minikube/client.key:ro
+      - /home/omar/.minikube/ca.crt:/var/jenkins_home/.minikube/ca.crt:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+ 
     networks:
       - devops_net
 
