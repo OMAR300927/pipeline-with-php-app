@@ -64,6 +64,6 @@ spec:
     app: ba-app
   ports:
   - port: 8000
-    targetPort: 8000
+    targetPort: 80
     protocol: TCP
     name: http

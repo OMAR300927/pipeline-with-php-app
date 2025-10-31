@@ -51,11 +51,6 @@ spec:
                 secretKeyRef:
                   name: secret
                   key: password
-            - name: EXPORTER_PORT
-              value: "9104"
-          volumeMounts:
-            - name: mysql-storage
-              mountPath: /var/lib/mysql
           resources:
             limits:
               memory: "1Gi"
@@ -63,6 +58,9 @@ spec:
             requests:
               memory: "512Mi"
               cpu: "250m"
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
@@ -83,7 +81,4 @@ spec:
       targetPort: 3306
       protocol: TCP
       name: http
-    - port: 9104
-      targetPort: 9104
-      name: metrics
-      protocol: TCP
+    
