@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ba-servicemonitor
+  namespace: monitor 
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: ba-app  
+  namespaceSelector:
+    any: false
+    matchNames:
+      - default 
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mysql-servicemonitor
+  namespace: monitor
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  namespaceSelector:
+    any: false
+    matchNames:
+      - default
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s

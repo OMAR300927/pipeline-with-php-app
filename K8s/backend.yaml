@@ -16,7 +16,7 @@ spec:
       - name: backend-container
         image: omarsa999/backendimage:latest
         ports:
-        - containerPort: 8000
+        - containerPort: 80
         env:
           - name: DB_HOST
             valueFrom:

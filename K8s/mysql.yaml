@@ -61,6 +61,26 @@ spec:
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
+
+        - name: mysqld-exporter
+          image: prom/mysqld-exporter:latest
+          env:
+            - name: DATA_SOURCE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-exporter-secret
+                  key: exporter_dsn
+          ports:
+            - containerPort: 9104
+              name: metrics
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+      
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
@@ -82,3 +102,18 @@ spec:
       protocol: TCP
       name: http
     
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-metrics
+  labels:
+    app: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+    - port: 9104
+      targetPort: 9104
+      protocol: TCP
+      name: metrics
