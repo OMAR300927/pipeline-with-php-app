@@ -1,17 +1,11 @@
 FROM php:8.2-apache
 
+# تثبيت الامتدادات المطلوبة
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# انسخ ملفات Composer
-COPY composer.json composer.lock /var/www/
+# نسخ مجلد vendor (المكتبات المثبتة مسبقًا) إذا موجود
+COPY ./vendor/ /var/www/vendor/
 
-WORKDIR /var/www/
-
-# تثبيت مكتبات Composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && composer install --no-dev --optimize-autoloader
-
-# انسخ باقي التطبيق
+# نسخ ملفات التطبيق
 COPY ./public/ /var/www/html/
 COPY ./src/ /var/www/src/
